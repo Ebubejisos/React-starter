@@ -1,11 +1,11 @@
 import Card from "./Card";
 
-function Game() {
+const Game = () => {
   return (
     <div className="game">
       <Card title="Coral" hex="#FF5733" />
       <Card title="Dodger Blue" hex="#00ADEF" />
-      <Card title="Purple" hex="##9C27B0" />
+      <Card title="Purple" hex="#9C27B0" />
       <Card title="Amber" hex="#FFC107" />
       <Card title="Green" hex="#4CAF50" />
       <Card title="Cerise" hex="#E91E63" />
@@ -17,6 +17,6 @@ function Game() {
       <Card title="Teal" hex="#009688" />
     </div>
   );
-}
+};
 
 export default Game;

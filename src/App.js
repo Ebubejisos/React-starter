@@ -3,10 +3,12 @@ import Game from "./components/Game";
 
 function App() {
   return (
-    <>
-      <Header />
-      <Game />
-    </>
+    <main className="main">
+      <div className="container">
+        <Header />
+        <Game />
+      </div>
+    </main>
   );
 }
 
