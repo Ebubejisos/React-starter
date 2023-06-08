@@ -10,6 +10,9 @@
     transform: translate(-50%,-50%);
 }
 
+.heading {
+  position: sticky;
+}
 main {
   width: 100%;
   position: relative;
@@ -23,6 +26,7 @@ main {
   position: relative;
   height: 250px;
   text-align: center;
+  cursor: pointer;
   h2 {
     text-align: center;
     @include centre();
