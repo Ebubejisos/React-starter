@@ -1,7 +1,11 @@
-function Card({ title, hex }) {
+function Card({ title, hex, handleClick }) {
   return (
     <>
-      <div className="card" style={{ backgroundColor: hex }}>
+      <div
+        className="card"
+        style={{ backgroundColor: hex }}
+        onClick={handleClick}
+      >
         <h2>{title}</h2>
       </div>
     </>
