@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Card from "./Card";
 
-const Game = () => {
+const Game = ({ score, bestScore, setScore, setBestScore }) => {
   const [cards, setCards] = useState([
     { title: "Coral", hex: "#FF5733", clicked: false },
     { title: "Dodger Blue", hex: "#00ADEF", clicked: false },
@@ -22,6 +22,22 @@ const Game = () => {
     shuffle();
   }, []);
 
+  function gameCheck(bool, cardIndex) {
+    if (bool == true) {
+      if (bestScore < score) {
+        setBestScore(score);
+      }
+      setScore(0);
+      restartGame();
+      return;
+    }
+    setScore((score) => score + 1);
+    const newCards = cards;
+    newCards[cardIndex].clicked = true;
+    setCards(newCards);
+    shuffle();
+  }
+
   function shuffle() {
     for (let i = cards.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -32,17 +48,13 @@ const Game = () => {
     setIsShuffled(!isShuffled);
   }
 
-  // eslint-disable-next-line no-unused-vars
-  function gameCheck(bool, cardIndex) {
-    if (bool == true) {
-      return;
-    }
-    // const isClicked = true;
-    const newCards = cards;
-    newCards[cardIndex].clicked = true;
-    setCards(newCards);
-    shuffle();
+  function restartGame() {
+    cards.map((card) => (card.clicked = false));
+    const initCards = cards;
+    console.table(initCards);
+    setCards(initCards);
   }
+
   return (
     <div className="game">
       {cards.map((card, index) => (

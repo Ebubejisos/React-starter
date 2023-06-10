@@ -1,11 +1,11 @@
-const Header = () => {
+const Header = ({ score, bestScore }) => {
   return (
     <header>
       <div className="heading">
         <h1>Color Memory Game</h1>
         <section>
-          <h3>Score: 0</h3>
-          <h3 className="bestScore">Best score: 0</h3>
+          <h3>Score: {score}</h3>
+          <h3 className="bestScore">Best score: {bestScore}</h3>
         </section>
       </div>
       <p>
