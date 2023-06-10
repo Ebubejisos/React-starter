@@ -3,24 +3,24 @@ import Card from "./Card";
 
 const Game = () => {
   const [cards, setCards] = useState([
-    { title: "Coral", hex: "#FF5733" },
-    { title: "Dodger Blue", hex: "#00ADEF" },
-    { title: "Purple", hex: "#9C27B0" },
-    { title: "Amber", hex: "#FFC107" },
-    { title: "Green", hex: "#4CAF50" },
-    { title: "Cerise", hex: "#E91E63" },
-    { title: "Light Blue", hex: "#03A9F4" },
-    { title: "Yellow", hex: "#FFEB3B" },
-    { title: "Lime Green", hex: "#8BC34A" },
-    { title: "Deep Purple", hex: "#673AB7" },
-    { title: "Orange", hex: "#FF9800" },
-    { title: "Teal", hex: "#009688" },
+    { title: "Coral", hex: "#FF5733", clicked: false },
+    { title: "Dodger Blue", hex: "#00ADEF", clicked: false },
+    { title: "Purple", hex: "#9C27B0", clicked: false },
+    { title: "Amber", hex: "#FFC107", clicked: false },
+    { title: "Green", hex: "#4CAF50", clicked: false },
+    { title: "Cerise", hex: "#E91E63", clicked: false },
+    { title: "Light Blue", hex: "#03A9F4", clicked: false },
+    { title: "Yellow", hex: "#FFEB3B", clicked: false },
+    { title: "Lime Green", hex: "#8BC34A", clicked: false },
+    { title: "Deep Purple", hex: "#673AB7", clicked: false },
+    { title: "Orange", hex: "#FF9800", clicked: false },
+    { title: "Teal", hex: "#009688", clicked: false },
   ]);
   const [isShuffled, setIsShuffled] = useState(false);
 
   useEffect(() => {
-    console.log("shuffled");
-  }, [isShuffled]);
+    shuffle();
+  }, []);
 
   function shuffle() {
     for (let i = cards.length - 1; i > 0; i--) {
@@ -32,6 +32,17 @@ const Game = () => {
     setIsShuffled(!isShuffled);
   }
 
+  // eslint-disable-next-line no-unused-vars
+  function gameCheck(bool, cardIndex) {
+    if (bool == true) {
+      return;
+    }
+    // const isClicked = true;
+    const newCards = cards;
+    newCards[cardIndex].clicked = true;
+    setCards(newCards);
+    shuffle();
+  }
   return (
     <div className="game">
       {cards.map((card, index) => (
@@ -39,7 +50,7 @@ const Game = () => {
           key={index}
           title={card.title}
           hex={card.hex}
-          handleClick={shuffle}
+          handleClick={() => gameCheck(card.clicked, index)}
         />
       ))}
     </div>
