@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import Card from "./Card";
+import DavyDisplay from "./DavyDisplay";
+import Congratulation from "./Congratulation";
 
 const Game = ({ score, bestScore, setScore, setBestScore }) => {
   const [cards, setCards] = useState([
@@ -15,23 +17,41 @@ const Game = ({ score, bestScore, setScore, setBestScore }) => {
     { title: "Deep Purple", hex: "#673AB7", clicked: false },
     { title: "Orange", hex: "#FF9800", clicked: false },
     { title: "Teal", hex: "#009688", clicked: false },
+    { title: "Mint", hex: "#66FF99", clicked: false },
+    { title: "Cobalt", hex: "#4C4CFF", clicked: false },
+    { title: "Ember", hex: "#FF9900", clicked: false },
+    { title: "Serene", hex: "#1AABBC ", clicked: false },
   ]);
   const [isShuffled, setIsShuffled] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [isGameWon, setIsGameWon] = useState(false);
+  const [remArray, setRemArray] = useState([]);
 
   useEffect(() => {
     shuffle();
   }, []);
 
   function gameCheck(bool, cardIndex) {
+    setIsGameOver(false);
     if (bool == true) {
+      setIsGameOver(true);
+      const tempCard = cards.filter((card) => card.clicked == false);
+      setRemArray(tempCard);
+
       if (bestScore < score) {
         setBestScore(score);
       }
+
       setScore(0);
       restartGame();
       return;
     }
     setScore((score) => score + 1);
+    () => {
+      if (score == 5) {
+        setIsGameWon(true);
+      }
+    };
     const newCards = cards;
     newCards[cardIndex].clicked = true;
     setCards(newCards);
@@ -49,23 +69,26 @@ const Game = ({ score, bestScore, setScore, setBestScore }) => {
   }
 
   function restartGame() {
-    cards.map((card) => (card.clicked = false));
     const initCards = cards;
-    console.table(initCards);
+    initCards.map((card) => (card.clicked = false));
     setCards(initCards);
   }
 
   return (
-    <div className="game">
-      {cards.map((card, index) => (
-        <Card
-          key={index}
-          title={card.title}
-          hex={card.hex}
-          handleClick={() => gameCheck(card.clicked, index)}
-        />
-      ))}
-    </div>
+    <main>
+      {isGameWon && <Congratulation setIsGameWon={setIsGameWon} />}
+      {isGameOver && <DavyDisplay remainderColor={remArray} />}
+      <div className="game">
+        {cards.map((card, index) => (
+          <Card
+            key={index}
+            title={card.title}
+            hex={card.hex}
+            handleClick={() => gameCheck(card.clicked, index)}
+          />
+        ))}
+      </div>
+    </main>
   );
 };
 
