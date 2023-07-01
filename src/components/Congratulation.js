@@ -1,17 +1,20 @@
-const Congratulation = ({ setIsGameWon }) => {
+const Congratulation = ({ setIsGameWon, handleClick }) => {
   return (
     <div id="overlay">
-      <h2 className="text">
-        Congratulations on Completing this round, can you do it again???
+      <div className="win-message">
+        <h1 className="text">Congratulations on Completing this round!!</h1>
+        <p>Can you do it again??</p>
+
         <button
           type="button"
           onClick={() => {
+            handleClick();
             setIsGameWon(false);
           }}
         >
           Restart Game
         </button>
-      </h2>
+      </div>
     </div>
   );
 };

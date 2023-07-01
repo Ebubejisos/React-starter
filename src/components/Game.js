@@ -17,7 +17,7 @@ const Game = ({ score, bestScore, setScore, setBestScore }) => {
     { title: "Deep Purple", hex: "#673AB7", clicked: false },
     { title: "Orange", hex: "#FF9800", clicked: false },
     { title: "Teal", hex: "#009688", clicked: false },
-    { title: "Mint", hex: "#66FF99", clicked: false },
+    { title: "Orchid", hex: "#CC00FF", clicked: false },
     { title: "Cobalt", hex: "#4C4CFF", clicked: false },
     { title: "Ember", hex: "#FF9900", clicked: false },
     { title: "Serene", hex: "#1AABBC ", clicked: false },
@@ -25,38 +25,51 @@ const Game = ({ score, bestScore, setScore, setBestScore }) => {
   const [isShuffled, setIsShuffled] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isGameWon, setIsGameWon] = useState(false);
-  const [remArray, setRemArray] = useState([]);
+  const [missedColors, setMissedColors] = useState([]);
+  let playerScore = score;
+  let playerBestScore = bestScore;
 
   useEffect(() => {
     shuffle();
   }, []);
 
-  function gameCheck(bool, cardIndex) {
-    setIsGameOver(false);
-    if (bool == true) {
-      setIsGameOver(true);
-      const tempCard = cards.filter((card) => card.clicked == false);
-      setRemArray(tempCard);
-
-      if (bestScore < score) {
-        setBestScore(score);
+  const gameCheck = (bool, cardIndex) => {
+    isGameOver == true ? setIsGameOver(false) : ""; //removes a component rendered when player loses
+    const bestScoreUpdater = () => {
+      if (playerBestScore < playerScore) {
+        playerBestScore = playerScore;
+        setBestScore(playerBestScore);
       }
+    };
 
-      setScore(0);
+    if (bool == true) {
+      const tempCard = cards.filter((card) => card.clicked == false);
+      setMissedColors(tempCard);
+      setIsGameOver(true);
+
+      bestScoreUpdater();
+      playerScore = 0;
+      setScore(playerScore);
       restartGame();
       return;
     }
-    setScore((score) => score + 1);
-    () => {
-      if (score == 5) {
+
+    playerScore++;
+    setScore(playerScore);
+
+    const winCheck = () => {
+      if (playerScore == 16) {
         setIsGameWon(true);
+        bestScoreUpdater();
+      } else {
+        const newCards = cards;
+        newCards[cardIndex].clicked = true;
+        setCards(newCards);
+        shuffle();
       }
     };
-    const newCards = cards;
-    newCards[cardIndex].clicked = true;
-    setCards(newCards);
-    shuffle();
-  }
+    winCheck();
+  };
 
   function shuffle() {
     for (let i = cards.length - 1; i > 0; i--) {
@@ -69,6 +82,8 @@ const Game = ({ score, bestScore, setScore, setBestScore }) => {
   }
 
   function restartGame() {
+    playerScore = 0;
+    setScore(playerScore);
     const initCards = cards;
     initCards.map((card) => (card.clicked = false));
     setCards(initCards);
@@ -76,8 +91,10 @@ const Game = ({ score, bestScore, setScore, setBestScore }) => {
 
   return (
     <main>
-      {isGameWon && <Congratulation setIsGameWon={setIsGameWon} />}
-      {isGameOver && <DavyDisplay remainderColor={remArray} />}
+      {isGameWon && (
+        <Congratulation setIsGameWon={setIsGameWon} handleClick={restartGame} />
+      )}
+      {isGameOver && <DavyDisplay remainderColor={missedColors} />}
       <div className="game">
         {cards.map((card, index) => (
           <Card

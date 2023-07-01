@@ -2,21 +2,37 @@
   margin: 0;
   box-sizing: border-box;
 }
-
-@mixin centre() {
-  position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
+body {
+  font-size: 20px;
 }
 
-.heading {
-  position: sticky;
+button {
+  cursor: pointer;
+  border-radius: 5px;
+  width: fit-content;
+}
+@mixin centre() {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+}
+
+header {
+  .heading {
+    position: sticky;
+    top: 0;
+    left: 0;
+  }
+  p {
+    color: rgb(232, 69, 69);
+  }
 }
 main {
   width: 100%;
   position: relative;
-  padding: 30px 0;
+  padding-bottom: 30px;
   .container {
     margin: 0 auto;
     max-width: 1200px;
@@ -39,9 +55,6 @@ main {
 }
 
 #overlay {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
   position: fixed; /* Sit on top of the page content */
   width: 100%; /* Full width (cover the whole page) */
   height: 100%; /* Full height (cover the whole page) */
@@ -51,21 +64,28 @@ main {
   bottom: 0;
   background-color: rgba(0,0,0,0.5); /* Black background with opacity */
   z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
-  cursor: pointer; /* Add a pointer on hover */
 }
 
-.text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  font-size: 50px;
+.win-message {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  @include centre();
+  font-size: 28px;
+  text-align: center;
+  align-items: center;
   color: white;
-  transform: translate(-50%,-50%);
-  -ms-transform: translate(-50%,-50%);
 }
 
 @media screen and (max-width: 480px) {
+  body {
+    font-size: 16px;
+  }
   main {
     padding: 30px 10px;
+  }
+  .game {
+    grid-template-columns: repeat(auto-fit, minmax(80px,1fr));
+    gap: 6px;
   }
 }

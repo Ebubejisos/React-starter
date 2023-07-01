@@ -9,8 +9,8 @@ const Header = ({ score, bestScore }) => {
         </section>
       </div>
       <p>
-        Get points by clicking on an image but don&#180;t click on any more than
-        once!
+        Get points by clicking on a color but don&#180;t click on any more than
+        once and don&#180;t run out of time!
       </p>
     </header>
   );
