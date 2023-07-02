@@ -26,22 +26,46 @@ const Game = ({ score, bestScore, setScore, setBestScore }) => {
   const [isGameOver, setIsGameOver] = useState(false);
   const [isGameWon, setIsGameWon] = useState(false);
   const [missedColors, setMissedColors] = useState([]);
+  const [gameStart, setGameStart] = useState(false);
+  const [totalTime, setTotalTime] = useState(20);
+  //stores props data received from App
   let playerScore = score;
   let playerBestScore = bestScore;
-
+  //variables for dislaying game timer
+  let minutes = Math.floor(totalTime / 60);
+  let seconds = totalTime % 60;
+  let stringySeconds = seconds < 10 ? "0" + seconds : seconds;
+  //shuffle card on Game mount
   useEffect(() => {
     shuffle();
   }, []);
-
+  // starts game timer and runs when start game button is clicked
+  function startGame() {
+    setGameStart(true);
+    let currentTime = totalTime;
+    currentTime--;
+    setTotalTime(currentTime);
+    if (currentTime < 4) {
+      console.log("less than 4seconds");
+    }
+  }
+  // runs each time a color is clicked and handles game logic
   const gameCheck = (bool, cardIndex) => {
-    isGameOver == true ? setIsGameOver(false) : ""; //removes a component rendered when player loses
+    // checks if game has been initialized
+    if (gameStart == false) {
+      return;
+    }
+    //removes a component rendered when player loses
+    isGameOver == true ? setIsGameOver(false) : "";
+
+    // compares player's score with his best score and updates best score when necessary
     const bestScoreUpdater = () => {
       if (playerBestScore < playerScore) {
         playerBestScore = playerScore;
         setBestScore(playerBestScore);
       }
     };
-
+    // checks if player has lost by clicking the same color
     if (bool == true) {
       const tempCard = cards.filter((card) => card.clicked == false);
       setMissedColors(tempCard);
@@ -50,13 +74,14 @@ const Game = ({ score, bestScore, setScore, setBestScore }) => {
       bestScoreUpdater();
       playerScore = 0;
       setScore(playerScore);
+      setGameStart(false);
       restartGame();
       return;
     }
-
+    // increases player's score if he clicks on an unclicked color
     playerScore++;
     setScore(playerScore);
-
+    // checks if player has won the game
     const winCheck = () => {
       if (playerScore == 16) {
         setIsGameWon(true);
@@ -95,6 +120,14 @@ const Game = ({ score, bestScore, setScore, setBestScore }) => {
         <Congratulation setIsGameWon={setIsGameWon} handleClick={restartGame} />
       )}
       {isGameOver && <DavyDisplay remainderColor={missedColors} />}
+      <h2 className="timer">
+        {minutes}:{stringySeconds}
+      </h2>
+      {
+        <button type="button" onClick={() => startGame()}>
+          Start Game
+        </button>
+      }
       <div className="game">
         {cards.map((card, index) => (
           <Card
