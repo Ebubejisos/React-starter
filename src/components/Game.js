@@ -39,6 +39,18 @@ const Game = ({ score, bestScore, setScore, setBestScore }) => {
   useEffect(() => {
     shuffle();
   }, []);
+  useEffect(() => {
+    const myInterval = setInterval(() => {
+      let currentTime = totalTime;
+      currentTime--;
+      setTotalTime(currentTime);
+    }, 1000);
+    if (totalTime < 4) {
+      clearInterval(myInterval);
+      console.log("interval cleared");
+    }
+    return () => clearInterval(myInterval);
+  });
   // starts game timer and runs when start game button is clicked
   function startGame() {
     setGameStart(true);
@@ -46,7 +58,7 @@ const Game = ({ score, bestScore, setScore, setBestScore }) => {
     currentTime--;
     setTotalTime(currentTime);
     if (currentTime < 4) {
-      console.log("less than 4seconds");
+      console.log("less than 4seconds left");
     }
   }
   // runs each time a color is clicked and handles game logic
@@ -57,7 +69,6 @@ const Game = ({ score, bestScore, setScore, setBestScore }) => {
     }
     //removes a component rendered when player loses
     isGameOver == true ? setIsGameOver(false) : "";
-
     // compares player's score with his best score and updates best score when necessary
     const bestScoreUpdater = () => {
       if (playerBestScore < playerScore) {
