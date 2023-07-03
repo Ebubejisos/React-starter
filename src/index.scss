@@ -20,6 +20,7 @@ button {
 }
 
 header {
+  margin: 20px 10px;
   .heading {
     position: sticky;
     top: 0;
@@ -29,6 +30,11 @@ header {
     color: rgb(232, 69, 69);
   }
 }
+.head-timer {
+  display: flex;
+  justify-content: space-between;
+}
+
 main {
   width: 100%;
   position: relative;

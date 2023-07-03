@@ -1,7 +1,7 @@
 const DavyDisplay = ({ remainderColor }) => {
   return (
     <div className="content">
-      <h2>You missed : </h2>
+      <h2>You missed {remainderColor.length} colors: </h2>
       <ul>
         {remainderColor.map((colorArray, index) => (
           <li key={index}>{colorArray.title}</li>

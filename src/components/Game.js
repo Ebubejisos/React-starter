@@ -3,7 +3,7 @@ import Card from "./Card";
 import DavyDisplay from "./DavyDisplay";
 import Congratulation from "./Congratulation";
 
-const Game = ({ score, bestScore, setScore, setBestScore }) => {
+const Game = ({ score, bestScore, setScore, setBestScore, gameTime }) => {
   const [cards, setCards] = useState([
     { title: "Coral", hex: "#FF5733", clicked: false },
     { title: "Dodger Blue", hex: "#00ADEF", clicked: false },
@@ -22,12 +22,12 @@ const Game = ({ score, bestScore, setScore, setBestScore }) => {
     { title: "Ember", hex: "#FF9900", clicked: false },
     { title: "Serene", hex: "#1AABBC ", clicked: false },
   ]);
-  const [isShuffled, setIsShuffled] = useState(false);
+  const [gameMount, setgameMount] = useState(true);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isGameWon, setIsGameWon] = useState(false);
   const [missedColors, setMissedColors] = useState([]);
   const [gameStart, setGameStart] = useState(false);
-  const [totalTime, setTotalTime] = useState(20);
+  const [totalTime, setTotalTime] = useState(gameTime);
   //stores props data received from App
   let playerScore = score;
   let playerBestScore = bestScore;
@@ -39,29 +39,44 @@ const Game = ({ score, bestScore, setScore, setBestScore }) => {
   useEffect(() => {
     shuffle();
   }, []);
-  useEffect(() => {
-    const myInterval = setInterval(() => {
-      let currentTime = totalTime;
-      currentTime--;
-      setTotalTime(currentTime);
-    }, 1000);
-    if (totalTime < 4) {
-      clearInterval(myInterval);
-      console.log("interval cleared");
-    }
-    return () => clearInterval(myInterval);
-  });
-  // starts game timer and runs when start game button is clicked
-  function startGame() {
-    setGameStart(true);
+  // initialize variable to start timer
+  let countDown;
+  // function that defines interval
+  const reduceTime = () => {
     let currentTime = totalTime;
     currentTime--;
     setTotalTime(currentTime);
-    if (currentTime < 4) {
-      console.log("less than 4seconds left");
+  };
+  const startTimer = () => {
+    countDown = setInterval(reduceTime, 1000);
+  };
+  const stopTimer = () => {
+    clearInterval(countDown);
+  };
+  useEffect(() => {
+    if (gameStart == true && totalTime > 0) {
+      startTimer();
     }
+    if (totalTime == 0) {
+      stopTimer();
+      showMissedColors();
+    }
+    return () => stopTimer();
+  }, [totalTime, gameStart]);
+
+  function startGame() {
+    setGameStart(true);
+    setgameMount(false);
   }
+  // starts game timer and runs when start game button is clicked
   // runs each time a color is clicked and handles game logic
+  const showMissedColors = () => {
+    const tempCard = cards.filter((card) => card.clicked == false);
+    setMissedColors(tempCard);
+    // enables restart button
+    setIsGameOver(true);
+  };
+
   const gameCheck = (bool, cardIndex) => {
     // checks if game has been initialized
     if (gameStart == false) {
@@ -78,15 +93,13 @@ const Game = ({ score, bestScore, setScore, setBestScore }) => {
     };
     // checks if player has lost by clicking the same color
     if (bool == true) {
-      const tempCard = cards.filter((card) => card.clicked == false);
-      setMissedColors(tempCard);
-      setIsGameOver(true);
-
+      stopTimer();
+      showMissedColors();
       bestScoreUpdater();
       playerScore = 0;
       setScore(playerScore);
+      // stops timer from counting down
       setGameStart(false);
-      restartGame();
       return;
     }
     // increases player's score if he clicks on an unclicked color
@@ -114,10 +127,13 @@ const Game = ({ score, bestScore, setScore, setBestScore }) => {
     }
     const newCards = cards;
     setCards(newCards);
-    setIsShuffled(!isShuffled);
   }
 
   function restartGame() {
+    setIsGameOver(false);
+    setTotalTime(gameTime);
+    // starts timer
+    setGameStart(true);
     playerScore = 0;
     setScore(playerScore);
     const initCards = cards;
@@ -134,11 +150,17 @@ const Game = ({ score, bestScore, setScore, setBestScore }) => {
       <h2 className="timer">
         {minutes}:{stringySeconds}
       </h2>
-      {
+      {gameMount && (
         <button type="button" onClick={() => startGame()}>
           Start Game
         </button>
-      }
+      )}
+
+      {isGameOver && (
+        <button type="button" onClick={() => restartGame()}>
+          Restart
+        </button>
+      )}
       <div className="game">
         {cards.map((card, index) => (
           <Card
